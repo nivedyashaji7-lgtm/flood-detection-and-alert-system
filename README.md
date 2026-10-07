@@ -55,4 +55,4 @@ Then open the local Flask URL in your browser.
 
 **Flood Detection & Alert System**
 
-![Flood Detection System](screenshots/flood system.png)
+![Flood Detection System](screenshots/ flood%20system.png)
