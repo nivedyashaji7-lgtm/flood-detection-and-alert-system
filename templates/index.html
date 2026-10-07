@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Flood Detection & Alert System</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #eef5f9;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #0f4c5c;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 35px auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            margin-bottom: 8px;
+            color: #0f4c5c;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .input-box {
+            border: 1px solid #d7e2e8;
+            border-radius: 12px;
+            padding: 20px;
+            background: #f9fcfd;
+        }
+
+        .input-box h3 {
+            color: #0f4c5c;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .description {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: #0f4c5c;
+        }
+
+        .range-info {
+            font-size: 12px;
+            color: #777;
+            margin-top: 6px;
+        }
+
+        .predict-button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: none;
+            border-radius: 9px;
+            background: #0f4c5c;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .predict-button:hover {
+            background: #0b3d4a;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+            color: #0f4c5c;
+        }
+
+        #result {
+            display: none;
+            text-align: center;
+        }
+
+        .probability {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #0f4c5c;
+        }
+
+        .risk {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .moderate {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .alert-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 9px;
+            background: #fff7ed;
+            color: #9a3412;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 95%;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+    <h1>🌊 Flood Detection & Alert System</h1>
+
+    <p>
+        Machine Learning Based Flood Risk Prediction
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- INPUT CARD -->
+
+    <div class="card">
+
+        <h2>Flood Risk Assessment</h2>
+
+        <p class="subtitle">
+            Enter the current environmental conditions using the four categories below.
+            Each value should be between 0 and 10.
+        </p>
+<div class="input-box" style="margin-bottom: 20px;">
+
+    <h3>📧 Email Address</h3>
+
+    <p class="description">
+        Enter your email address to receive an alert if high flood risk is detected.
+    </p>
+
+    <label for="email">
+        Email Address
+    </label>
+
+    <input
+        type="email"
+        id="email"
+        placeholder="example@gmail.com"
+        required
+    >
+
+</div>
+
+        <div class="input-grid">
+
+
+            <!-- CLIMATE -->
+
+            <div class="input-box">
+
+                <h3>🌧️ Climate & Weather</h3>
+
+                <p class="description">
+                    Represents the overall influence of rainfall patterns,
+                    climate change, deforestation and landslide conditions
+                    on flood risk.
+                </p>
+
+                <label for="climate">
+                    Climate & Weather Score
+                </label>
+
+                <input
+                    type="number"
+                    id="climate"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    placeholder="Example: 6"
+                >
+
+                <div class="range-info">
+                    0 = Very Low &nbsp; | &nbsp; 10 = Very High
+                </div>
+
+            </div>
+
+
+            <!-- WATER -->
+
+            <div class="input-box">
+
+                <h3>🌊 Water & Drainage</h3>
+
+                <p class="description">
+                    Represents drainage capacity, river management,
+                    water flow, siltation and the condition of surrounding
+                    water bodies.
+                </p>
+
+                <label for="water">
+                    Water & Drainage Score
+                </label>
+
+                <input
+                    type="number"
+                    id="water"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    placeholder="Example: 7"
+                >
+
+                <div class="range-info">
+                    0 = Very Low &nbsp; | &nbsp; 10 = Very High
+                </div>
+
+            </div>
+
+
+            <!-- INFRASTRUCTURE -->
+
+            <div class="input-box">
+
+                <h3>🏗️ Infrastructure & Preparedness</h3>
+
+                <p class="description">
+                    Represents the condition of dams, drainage systems,
+                    infrastructure and disaster preparedness in the area.
+                </p>
+
+                <label for="infrastructure">
+                    Infrastructure & Preparedness Score
+                </label>
+
+                <input
+                    type="number"
+                    id="infrastructure"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    placeholder="Example: 5"
+                >
+
+                <div class="range-info">
+                    0 = Very Low &nbsp; | &nbsp; 10 = Very High
+                </div>
+
+            </div>
+
+
+            <!-- HUMAN IMPACT -->
+
+            <div class="input-box">
+
+                <h3>🏘️ Population & Human Impact</h3>
+
+                <p class="description">
+                    Represents urbanization, agricultural activities,
+                    population pressure, encroachments and human-related
+                    environmental factors.
+                </p>
+
+                <label for="human_impact">
+                    Population & Human Impact Score
+                </label>
+
+                <input
+                    type="number"
+                    id="human_impact"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    placeholder="Example: 6"
+                >
+
+                <div class="range-info">
+                    0 = Very Low &nbsp; | &nbsp; 10 = Very High
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="predict-button"
+            onclick="predictFlood()"
+        >
+            🔍 Predict Flood Risk
+        </button>
+
+
+        <div id="loading">
+            Analysing conditions and predicting flood risk...
+        </div>
+
+    </div>
+
+
+    <!-- RESULT CARD -->
+
+    <div
+        class="card"
+        id="result"
+    >
+
+        <h2>Prediction Result</h2>
+
+        <div
+            class="probability"
+            id="probability"
+        >
+            0%
+        </div>
+
+        <div
+            class="risk"
+            id="risk"
+        >
+            Risk
+        </div>
+
+        <div
+            class="alert-box"
+            id="alertBox"
+        >
+            ⚠️ High flood risk detected. Appropriate preventive
+            measures should be taken.
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="footer">
+
+    Flood Detection & Alert System |
+    Machine Learning Project
+
+</div>
+
+
+
+<script>
+
+
+async function predictFlood() {
+    const email =
+        document.getElementById("email").value.trim();
+
+    const climate =
+        document.getElementById("climate").value;
+
+    const water =
+        document.getElementById("water").value;
+
+    const infrastructure =
+        document.getElementById("infrastructure").value;
+
+    const humanImpact =
+        document.getElementById("human_impact").value;
+
+
+    // Check empty fields
+
+    if (
+        climate === "" ||
+        water === "" ||
+        infrastructure === "" ||
+        humanImpact === ""
+    ) {
+
+        alert(
+            "Please enter all four values before predicting."
+        );
+
+        return;
+
+    }
+
+
+    // Check range
+
+    const values = [
+        parseFloat(climate),
+        parseFloat(water),
+        parseFloat(infrastructure),
+        parseFloat(humanImpact)
+    ];
+
+
+    for (let value of values) {
+
+        if (value < 0 || value > 10) {
+
+            alert(
+                "Please enter values between 0 and 10."
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    // Show loading
+
+    document.getElementById("loading").style.display =
+        "block";
+
+    document.getElementById("result").style.display =
+        "none";
+
+
+    try {
+
+
+        const response = await fetch(
+            "/predict",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    email : email,
+
+                    climate: parseFloat(climate),
+
+                    water: parseFloat(water),
+
+                    infrastructure:
+                        parseFloat(infrastructure),
+
+                    human_impact:
+                        parseFloat(humanImpact)
+
+                })
+
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.error ||
+                "Prediction failed."
+            );
+
+            return;
+
+        }
+
+
+        // Display result
+
+        document.getElementById(
+            "probability"
+        ).textContent =
+            data.probability + "%";
+
+
+        const riskElement =
+            document.getElementById("risk");
+
+
+        riskElement.textContent =
+            data.risk_level;
+
+
+        // Remove previous classes
+
+        riskElement.classList.remove(
+            "low",
+            "moderate",
+            "high"
+        );
+
+
+        // Apply risk color
+
+        if (
+            data.risk_level === "Low Risk"
+        ) {
+
+            riskElement.classList.add("low");
+
+        }
+
+        else if (
+            data.risk_level === "Moderate Risk"
+        ) {
+
+            riskElement.classList.add("moderate");
+
+        }
+
+        else {
+
+            riskElement.classList.add("high");
+
+        }
+
+
+        // High-risk alert
+
+        const alertBox =
+            document.getElementById("alertBox");
+
+
+        if (
+            data.risk_level === "High Risk"
+        ) {
+
+            alertBox.style.display =
+                "block";
+
+        }
+
+        else {
+
+            alertBox.style.display =
+                "none";
+
+        }
+
+
+        document.getElementById(
+            "result"
+        ).style.display =
+            "block";
+
+
+    }
+
+    catch (error) {
+
+        alert(
+            "Unable to connect to the server."
+        );
+
+        console.error(error);
+
+    }
+
+    finally {
+
+        document.getElementById(
+            "loading"
+        ).style.display =
+            "none";
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
+
