@@ -54,3 +54,5 @@ Then open the local Flask URL in your browser.
 ## 👩‍💻 Project
 
 **Flood Detection & Alert System**
+
+![Flood Detection System](screenshots/flood system.png)
